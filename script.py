@@ -17,7 +17,7 @@ class Measurements():
         measurements = []
         core = 0
 
-        for node in range(multiprocessing.cpu_count()):
+        for node in range(0,5):
             with open(f"/sys/devices/virtual/thermal/thermal_zone{core}/temp", "r") as file:
                 clock_point = {
                     "measurement": "cpu_temp",
@@ -30,6 +30,7 @@ class Measurements():
                     }
                 }
                 measurements.append(clock_point)
+                core +=1
         return measurements
 
 
@@ -55,7 +56,7 @@ class Measurements():
                         }
                     }
 
-                core = core + 1
+                core +=1
                 measurements.append(point_temp)
         return measurements
 
@@ -84,6 +85,8 @@ class Measurements():
                     }
                 }
                 measurements.append(clock_point)
+
+            core +=1
         return measurements
 
     def collect_clock_x86(self):
