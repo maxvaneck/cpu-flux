@@ -1,10 +1,10 @@
-before_script:
+ before_script:
 	- apt-get update -qq && apt-get install -y -qq python3-pip
 	- pip3 install influxdb --no-cache-dir
 	- cd cpu-flux
 	
 
-tests:
+ tests:
      script:
 	- python3 script.py test=true
 	
