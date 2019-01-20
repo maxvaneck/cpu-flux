@@ -4,6 +4,8 @@ import time
 import platform
 
 import multiprocessing
+import argparse
+
 
 class Measurements():
 
@@ -118,19 +120,33 @@ class Measurements():
 
 if __name__ == "__main__":
 
+    parser = argparse.ArgumentParser()
+    parser.add_argument("test", help="arguement for ci testing")
+    args = parser.parse_args()
+
 
 
     client = InfluxDBClient(host="192.168.1.128",port=8086,database="telegraf")
 
     measurements = Measurements()
 
-    while True:
+    if args.test:
+        print("testing")
         try:
             client.write_points(measurements.collect_cpu_clock())
             client.write_points(measurements.collect_cpu_temp())
         except Exception:
             time.sleep(150)
             print("Exception occurred")
-            
-        time.sleep(10)
+
+    else:
+        while True:
+            try:
+                client.write_points(measurements.collect_cpu_clock())
+                client.write_points(measurements.collect_cpu_temp())
+            except Exception:
+                time.sleep(150)
+                print("Exception occurred")
+
+            time.sleep(10)
 
