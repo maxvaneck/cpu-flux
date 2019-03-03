@@ -130,7 +130,7 @@ if __name__ == "__main__":
 
     measurements = Measurements()
 
-    if args.test:
+    if args.test is True:
         print("testing")
         try:
             client.write_points(measurements.collect_cpu_clock())
@@ -139,7 +139,7 @@ if __name__ == "__main__":
             time.sleep(150)
             print("Exception occurred")
 
-    else:
+    if args.test is False:
         while True:
             try:
                 client.write_points(measurements.collect_cpu_clock())
