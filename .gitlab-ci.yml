@@ -6,4 +6,4 @@ before_script:
 
 tests:
     script:
-        - python3 script.py --test=true
+        - python3 script.py --test=true --influxDB=influxdb.sagesdeath.com
