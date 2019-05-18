@@ -119,18 +119,33 @@ class Measurements():
 
 
 if __name__ == "__main__":
-    client = InfluxDBClient(host="192.168.1.101",port=8086,database="telegraf")
 
     measurements = Measurements()
 
+    parser = argparse.ArgumentParser(description='Cpu flux')
 
-    while True:
-            try:
-                client.write_points(measurements.collect_cpu_clock())
-                client.write_points(measurements.collect_cpu_temp())
-            except Exception:
-                time.sleep(150)
-                print("Exception occurred")
+    parser.add_argument('--test',help='for testing')
+    parser.add_argument('--influxDB',help='ip-address of the influxDB server',default='192.168.1.101',required=True)
 
-            time.sleep(10)
+    args = parser.parse_args()
+
+    if (args.test):
+        client = InfluxDBClient(host=args.influxDB,port=8086,database="telegraf")
+
+        client.write_points(measurements.collect_cpu_clock())
+        client.write_points(measurements.collect_cpu_temp())
+
+    else:
+        client = InfluxDBClient(host=args.influxDB,port=8086,database="telegraf")
+
+        while True:
+                try:
+                    client.write_points(measurements.collect_cpu_clock())
+                    client.write_points(measurements.collect_cpu_temp())
+                except Exception as e:
+                    time.sleep(150)
+                    print(e)
+                    print("retrying in 150 secs")
+
+                time.sleep(10)
 
