@@ -2,6 +2,8 @@ FROM alpine:3.7
 
 ADD script.py /
 
+ENV influxDBServer = influxdb.sagesdeath.com
+
 RUN apk add --no-cache python3 && \ 
 apk add --no-cache lm_sensors &&\
 python3 -m ensurepip && \ 
@@ -14,4 +16,4 @@ rm -r /root/.cache
 
 
 
-CMD python3 script.py 
+CMD python3 script.py --influxDB=${influxDBServer}
