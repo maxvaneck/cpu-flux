@@ -2,12 +2,16 @@ from influxdb import InfluxDBClient
 import subprocess
 import time
 import platform
-
-import multiprocessing
+import re
 import argparse
-
+import multiprocessing
 
 class Measurements():
+    ip_adresses = {"olga": ["172.16.1.17", "172.16.1.18"],
+                   "chris": ["172.16.1.16"],
+                   "max": ["172.16.1.14", "172.168.1.15", "192.168.1.10"]}
+
+    regex = re.compile("\((\d+\.\d+\.\d+\.\d+)\)")
 
     def collect_cpu_temp(self):
         if "arm" in platform.machine():
@@ -34,6 +38,36 @@ class Measurements():
                 measurements.append(clock_point)
                 core +=1
         return measurements
+
+    def findRoommates(self):
+        roommate_home = []
+
+        nmap = subprocess.Popen(["nmap", "-sL", "172.16.1.0/24", "192.168.1.0/24"], stdout=subprocess.PIPE)
+
+        ip_found = self.regex.findall(str(nmap.communicate()))
+
+        for name in list(self.ip_adresses.keys()):
+            found = False
+
+            for ip in ip_found:
+                if ip in self.ip_adresses[name]:
+                    found = True
+                    break
+                else:
+                    found = False
+
+            roommate_home.append({
+                "measurement": "roommate",
+                "tags": {
+                    "roomate": name
+                },
+                "fields": {
+                    "attendance": float(found)
+                }
+            }
+            )
+
+        return roommate_home
 
 
     def collect_cpu_temp_x86(self):
@@ -122,7 +156,7 @@ if __name__ == "__main__":
 
     measurements = Measurements()
 
-    parser = argparse.ArgumentParser(description='Cpu flux')
+    parser = argparse.ArgumentParser(description='CPU flux and more')
 
     parser.add_argument('--test',help='for testing')
     parser.add_argument('--influxDB',help='ip-address of the influxDB server',default='192.168.1.101',required=True)
@@ -142,6 +176,7 @@ if __name__ == "__main__":
                 try:
                     client.write_points(measurements.collect_cpu_clock())
                     client.write_points(measurements.collect_cpu_temp())
+                    client.write_points(measurements.findRoommates())
                 except Exception as e:
                     time.sleep(150)
                     print(e)

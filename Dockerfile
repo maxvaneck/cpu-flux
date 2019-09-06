@@ -5,7 +5,7 @@ ADD script.py /
 ENV influxDBServer = influxdb.sagesdeath.com
 
 RUN apk add --no-cache python3 && \ 
-apk add --no-cache lm_sensors &&\
+apk add --no-cache lm_sensors nmap &&\
 python3 -m ensurepip && \ 
 rm -r /usr/lib/python*/ensurepip && \
 pip3 install --upgrade pip setuptools && \
