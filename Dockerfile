@@ -2,7 +2,7 @@ FROM alpine:3.7
 
 ADD script.py /
 
-ENV influxDBServer = influxdb.sagesdeath.com
+ENV influxDBServer = "influxdb.sagesdeath.com"
 
 RUN apk add --no-cache python3 && \ 
 apk add --no-cache lm_sensors nmap &&\
