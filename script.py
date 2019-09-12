@@ -5,13 +5,15 @@ import platform
 import re
 import argparse
 import multiprocessing
+from threading import Thread
 
 class Measurements():
-    ip_adresses = {"olga": ["172.16.1.17", "172.16.1.18"],
-                   "chris": ["172.16.1.16"],
-                   "max": ["172.16.1.14", "172.168.1.15", "192.168.1.10"]}
+    ip_adresses = {"olga": ["172.16.1.5"],
+                   "chris": ["172.16.1.3"],
+                   "max": ["172.16.1.4"],
+                   "glyn": ["172.16.1.2"]}
 
-    regex = re.compile("\((\d+\.\d+\.\d+\.\d+)\)")
+    regex = re.compile("(\d+\.\d+\.\d+\.\d+)\n")
 
     def collect_cpu_temp(self):
         if "arm" in platform.machine():
@@ -40,9 +42,10 @@ class Measurements():
         return measurements
 
     def findRoommates(self):
+
         roommate_home = []
 
-        nmap = subprocess.Popen(["nmap", "-sL", "172.16.1.0/24", "192.168.1.0/24"], stdout=subprocess.PIPE)
+        nmap = subprocess.Popen(["nmap","-v", "-sn", "172.16.1.2", "192.168.1.3","172.16.1.4","172.16.1.5"], stdout=subprocess.PIPE)
 
         ip_found = self.regex.findall(str(nmap.communicate()))
 
