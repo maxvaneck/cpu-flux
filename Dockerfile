@@ -2,7 +2,7 @@ FROM alpine:3.7
 
 ADD script.py /
 
-#ARG influxDBServer='"influxdb.sagesdeath.com"'
+#
 
 RUN apk add --no-cache python3 && \ 
 apk add --no-cache lm_sensors nmap &&\
@@ -16,4 +16,4 @@ rm -r /root/.cache
 
 
 
-CMD python3 script.py --influxDB="192.168.1.7"
+ENTRYPOINT ["python3","./script.py"]

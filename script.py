@@ -28,7 +28,7 @@ class Measurements():
         for node in range(0,5):
             with open(f"/sys/devices/virtual/thermal/thermal_zone{core}/temp", "r") as file:
                 clock_point = {
-                    "measurement": "cpu_temp",
+                    "measurement": "cpu_clock",
                     "tags": {
                         "Cpu_core": f"Cpu_core{core}",
                         "Host": str(platform.node())
